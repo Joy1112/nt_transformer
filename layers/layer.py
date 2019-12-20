@@ -3,8 +3,8 @@ import numpy as onp
 import jax.numpy as np
 import jax.random as random
 import neural_tangents as nt
+from jax.experimental import stax
 from neural_tangents import stax as nt_stax
-from jax.experimental import stax as jax_stax
 
 
 def randn(shape, std):
