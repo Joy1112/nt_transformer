@@ -55,3 +55,33 @@ def mlp(cx, x, n_hidden):
     Y_b_t_s = dense(cx.scope('c_proj'), H_b_t_h, S)
 
     return Y_b_t_s
+
+
+def maskAttentionWeight(w):
+    n = w.shape[-1]
+    b = np.reshape(np.tril(np.ones([n, n])), [1, 1, n, n])
+    return w * b - 1e9 * (1 - b)
+
+
+def _Attention(q, k, v):
+    """
+    q:
+        shape: [B, H, T, R]
+    k:
+        shape: [B, H, R, T]
+    v:
+        shape: [B, H, T, R]
+    """
+
+    R = q.shape[-1]
+    W_bhtt = np.matmul(q, k) / np.sqrt(R)
+    W_bhtt = maskAttentionWeight(W_bhtt)
+    W_bhtt = stax.softmax(W_bhtt, axis=-1)
+
+    return np.matmul(W_bhtt, v)
+
+
+def Attention(cx, x, n_state, n_head):
+    B, T, _K = x.shape
+    assert n_state % n_head == 0
+    
