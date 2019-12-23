@@ -38,7 +38,7 @@ def normc(*shape):
     return normax(shape, axis=0)
 
 
-def dense(cx, x, F):
+def dense_old(cx, x, F):
     # batch b, sequences t, d_model k
     B, T, K = x.shape
     x_bt_k = np.reshape(x, [-1, K])
@@ -49,12 +49,15 @@ def dense(cx, x, F):
     return np.reshape(y_bt_f, [B, T, F])
 
 
-def mlp(cx, x, n_hidden):
+def mlp_old(cx, x, n_hidden):
     S = x.shape[-1]
     H_b_t_h = stax.relu(dense(cx.scope('c_fc'), x, n_hidden))
     Y_b_t_s = dense(cx.scope('c_proj'), H_b_t_h, S)
 
     return Y_b_t_s
+
+def dense(cx, x, F):
+    
 
 
 def maskAttentionWeight(w):
@@ -84,4 +87,5 @@ def _Attention(q, k, v):
 def Attention(cx, x, n_state, n_head):
     B, T, _K = x.shape
     assert n_state % n_head == 0
+
     
