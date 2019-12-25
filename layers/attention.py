@@ -49,19 +49,3 @@ def attention(n_state, n_head=1, residual=True):
                        stax.Dense(n_state))
     Shortcut = stax.Identity()
     return stax.serial(stax.FanOut(2), stax.Parallel(Main, Shortcut), stax.FanInSum())
-
-
-def encoderBlock(n_state, n_head=1):
-    Main = stax.serial(attention(n_state, n_head),
-                       stax.BatchNorm(axis=-1),
-                       stax.Dense(4 * n_state),
-                       stax.Relu(),
-                       stax.Dense(n_state))
-    Shortcut = stax.Identity()
-    return stax.serial(stax.FanOut(2), stax.Parallel(Main, Shortcut),
-                       stax.FanInSum(), stax.BatchNorm(axis=-1))
-
-def encoderGroup(n_group, n_state, n_head=1):
-    blocks = []
-    for _ in range(n_group):
-        blocks += [encoderBlock(n_state, n_head)]
