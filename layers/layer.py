@@ -84,8 +84,8 @@ def _Attention(q, k, v):
     return np.matmul(W_bhtt, v)
 
 
-def Attention(cx, x, n_state, n_head):
-    B, T, _K = x.shape
-    assert n_state % n_head == 0
+# def Attention(cx, x, n_state, n_head):
+#     B, T, _K = x.shape
+#     assert n_state % n_head == 0
 
     
